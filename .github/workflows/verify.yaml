@@ -8,11 +8,10 @@ on:
 
 jobs:
 
-  build:
-    name: Build
+  verify:
+    name: Verify
     runs-on: ubuntu-latest
     steps:
-
     - name: Set up Go 1.12
       uses: actions/setup-go@v1
       with:
@@ -22,5 +21,9 @@ jobs:
     - name: Check out code into the Go module directory
       uses: actions/checkout@v1
 
-    - name: Build
-      run: make
+    - name: Basic checks
+      run: make check
+    - name: Build binaries and images
+      run: make docker e2e-docker
+    - name: Unit Tests
+      run: make test
