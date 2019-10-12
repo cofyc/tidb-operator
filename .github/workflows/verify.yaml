@@ -9,8 +9,10 @@ on:
 jobs:
 
   verify:
-    name: Verify
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04, macOS-10.14]
     steps:
     - name: Set up Go 1.12
       uses: actions/setup-go@v1
@@ -22,8 +24,8 @@ jobs:
       uses: actions/checkout@v1
 
     - name: Basic checks
-      run: make check
+      run: make check-setup check
     - name: Build binaries and images
-      run: make docker e2e-docker
+      run: make docker e2e-docker cli
     - name: Unit Tests
       run: make test
