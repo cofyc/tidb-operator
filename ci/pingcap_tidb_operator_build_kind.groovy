@@ -200,14 +200,16 @@ def call(BUILD_BRANCH, CREDENTIALS_ID, CODECOV_CREDENTIALS_ID) {
 		builds.failFast = false
 		parallel builds
 
-		// we requires ~/bin/config.cfg, filemgr-linux64 utilities on k8s-kind node
-		// TODO make it possible to run on any node
-		node('k8s-kind') {
-			dir("${PROJECT_DIR}"){
-				deleteDir()
-				unstash 'tidb-operator'
-				if ( !(BUILD_BRANCH ==~ /[a-z0-9]{40}/) ) {
+		if (!(BUILD_BRANCH ==~ /[a-z0-9]{40}/)) {
+			node('linux') {
+				dir("${PROJECT_DIR}"){
+					deleteDir()
+					unstash 'tidb-operator'
+					withCredentials([string(credentialsId: "", variable: 'codecovToken')]) {
+						CODECOV_TOKEN = codecovToken
+					}
 					stage('upload tidb-operator binary and charts'){
+						sh "GITHASH=${GITHASH} BRANCH=${BUILD_BRANCH} ./hack/ci-publish.sh"
 						//upload binary and charts
 						sh """
 						cp ~/bin/config.cfg ./
