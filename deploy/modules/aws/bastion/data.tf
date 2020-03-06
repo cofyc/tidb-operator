@@ -1,7 +1,9 @@
 data "aws_ami" "centos" {
   most_recent = true
 
-  owners = ["679593333241"]
+  # 679593333241: non-cn regions
+  # 336777782633: cn regions, e.g. cn-north-1, cn-northwest-1
+  owners = ["679593333241", "336777782633"]
 
   filter {
     name   = "name"
@@ -20,6 +22,7 @@ data "aws_ami" "centos" {
 
   filter {
     name   = "product-code"
-    values = ["aw0evgkw8e5c1q413zgy5pjce"]
+    values = ["g3kvn950n45rumoxwlkl2ebw"]
   }
+
 }

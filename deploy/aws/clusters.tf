@@ -39,7 +39,7 @@ provider "helm" {
 
 module "default-cluster" {
   providers = {
-    helm = "helm.eks"
+    helm = helm.eks
   }
   source  = "../modules/aws/tidb-cluster"
   eks     = local.eks

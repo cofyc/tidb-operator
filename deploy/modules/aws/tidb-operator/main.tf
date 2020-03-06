@@ -5,12 +5,16 @@ provider "aws" {
 module "eks" {
   source = "terraform-aws-modules/eks/aws"
 
-  version            = "5.1.0"
+  version            = "9.0.0"
   cluster_name       = var.eks_name
   cluster_version    = var.eks_version
   vpc_id             = var.vpc_id
   config_output_path = var.config_output_path
   subnets            = var.subnets
+
+  # Owner of EKS images in CN regions is different with non-CN regions.
+  worker_ami_owner_id = contains(["cn-northwest-1", "cn-north-1"], var.region) ? "961992271922" : "602401143452"
+  worker_ami_owner_id_windows = contains(["cn-northwest-1", "cn-north-1"], var.region) ? "016951021795" : "801119661308"
 
   tags = {
     app = "tidb"
@@ -72,14 +76,14 @@ EOS
 }
 
 data "helm_repository" "pingcap" {
-  provider   = "helm.initial"
-  depends_on = ["null_resource.setup-env"]
+  provider   = helm.initial
+  depends_on = [null_resource.setup-env]
   name       = "pingcap"
   url        = "http://charts.pingcap.org/"
 }
 
 resource "helm_release" "tidb-operator" {
-  provider   = "helm.initial"
+  provider   = helm.initial
   depends_on = [null_resource.setup-env, local_file.kubeconfig]
 
   repository = data.helm_repository.pingcap.name

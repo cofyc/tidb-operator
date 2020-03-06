@@ -7,7 +7,9 @@ data "aws_ami" "eks_worker" {
   most_recent = true
 
   # Owner ID of AWS EKS team
-  owners = ["602401143452"]
+  # 679593333241: non-cn regions
+  # 961992271922: cn regions, e.g. cn-north-1, cn-northwest-1
+  owners = ["679593333241", "961992271922"]
 }
 
 data "template_file" "userdata" {
