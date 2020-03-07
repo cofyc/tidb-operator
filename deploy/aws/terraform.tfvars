@@ -1,3 +1,5 @@
-region = "cn-northwest-1"
+# region = "cn-northwest-1"
+region = "cn-north-1"
 #region = "us-west-2"
 eks_name = "fuyecheng"
+# eks_versin = "1.14"

@@ -8,8 +8,9 @@ data "aws_ami" "eks_worker" {
 
   # Owner ID of AWS EKS team
   # 679593333241: non-cn regions
-  # 961992271922: cn regions, e.g. cn-north-1, cn-northwest-1
-  owners = ["679593333241", "961992271922"]
+  # 961992271922: cn-northwest-1
+  # 918309763551: cn-north-1
+  owners = ["679593333241", "961992271922", "918309763551"]
 }
 
 data "template_file" "userdata" {

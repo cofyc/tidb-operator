@@ -3,9 +3,10 @@ provider "aws" {
 }
 
 module "eks" {
-  source = "terraform-aws-modules/eks/aws"
+  # source = "terraform-aws-modules/eks/aws"
+  source = "/data/projects/terraform-aws-eks"
 
-  version            = "9.0.0"
+  # version            = "9.0.0"
   cluster_name       = var.eks_name
   cluster_version    = var.eks_version
   vpc_id             = var.vpc_id
@@ -13,7 +14,10 @@ module "eks" {
   subnets            = var.subnets
 
   # Owner of EKS images in CN regions is different with non-CN regions.
-  worker_ami_owner_id = contains(["cn-northwest-1", "cn-north-1"], var.region) ? "961992271922" : "602401143452"
+  # cn-north-1: 918309763551
+  # cn-northwest-1: 961992271922
+  worker_ami_owner_id = contains(["cn-northwest-1", "cn-north-1"], var.region) ? "918309763551" : "602401143452"
+  # worker_ami_owner_id = contains(["cn-northwest-1", "cn-north-1"], var.region) ? "961992271922" : "602401143452"
   worker_ami_owner_id_windows = contains(["cn-northwest-1", "cn-north-1"], var.region) ? "016951021795" : "801119661308"
 
   tags = {
