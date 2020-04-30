@@ -285,21 +285,21 @@ def call(BUILD_BRANCH, CREDENTIALS_ID, CODECOV_CREDENTIALS_ID) {
 					}
 
 					stage("Prepare for e2e") {
-						withCredentials([usernamePassword(credentialsId: 'TIDB_OPERATOR_HUB_AUTH', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-							sh """#!/bin/bash
-							set -eu
-							echo "info: logging into hub.pingcap.net"
-							docker login -u \$USERNAME --password-stdin hub.pingcap.net <<< \$PASSWORD
-							echo "info: build and push images for e2e"
-							NO_BUILD=y DOCKER_REPO=hub.pingcap.net/tidb-operator-e2e IMAGE_TAG=${GITHASH} make docker-push e2e-docker-push
-							echo "info: download binaries for e2e"
-							SKIP_BUILD=y SKIP_IMAGE_BUILD=y SKIP_UP=y SKIP_TEST=y SKIP_DOWN=y ./hack/e2e.sh
-							echo "info: change ownerships for jenkins"
-							# we run as root in our pods, this is required
-							# otherwise jenkins agent will fail because of the lack of permission
-							chown -R 1000:1000 .
-							"""
-						}
+						// withCredentials([usernamePassword(credentialsId: 'TIDB_OPERATOR_HUB_AUTH', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+							// sh """#!/bin/bash
+							// set -eu
+							// echo "info: logging into hub.pingcap.net"
+							// docker login -u \$USERNAME --password-stdin hub.pingcap.net <<< \$PASSWORD
+							// echo "info: build and push images for e2e"
+							// NO_BUILD=y DOCKER_REPO=hub.pingcap.net/tidb-operator-e2e IMAGE_TAG=${GITHASH} make docker-push e2e-docker-push
+							// echo "info: download binaries for e2e"
+							// SKIP_BUILD=y SKIP_IMAGE_BUILD=y SKIP_UP=y SKIP_TEST=y SKIP_DOWN=y ./hack/e2e.sh
+							// echo "info: change ownerships for jenkins"
+							// # we run as root in our pods, this is required
+							// # otherwise jenkins agent will fail because of the lack of permission
+							// chown -R 1000:1000 .
+							// """
+						// }
 						stash excludes: "vendor/**,deploy/**,tests/**", name: "tidb-operator"
 					}
 				}
@@ -320,7 +320,7 @@ def call(BUILD_BRANCH, CREDENTIALS_ID, CODECOV_CREDENTIALS_ID) {
 			build("v1.18-serial", "${GLOBALS} KUBE_VERSION=v1.18 ./hack/e2e.sh -- --preload-images --ginkgo.focus='\\[Serial\\]' --install-operator=false", e2eSerialResources)
 		}
 		builds.failFast = false
-		parallel builds
+		// parallel builds
 
 		if (!(BUILD_BRANCH ==~ /[a-z0-9]{40}/)) {
 			podTemplate(yaml: buildPodYAML(resources: [requests: [cpu: "1", memory: "1G"]])) {
